@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Bio Health Framework // Secure Gatekeeper</title>
+    <style>
+        :root {
+            --bg-main: #01060B;
+            --bg-card: rgba(3, 11, 20, 0.92);
+            --border-glow: #004466;
+            --accent-blue: #00D2FF;
+            --accent-green: #00FF88;
+            --accent-red: #FF3366;
+            --text-primary: #D5E3F5;
+            --text-secondary: #5F7D95;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Persistent Matrix Background Canvas Element */
+        #matrixCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* CRT Scanning Interlacing Lines Frame Overlay */
+        .screen-overlay {
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            z-index: 10;
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        /* Central Login Terminal Box */
+        .login-vault {
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-blue);
+            border-radius: 4px;
+            padding: 30px;
+            box-shadow: 0 0 35px rgba(0, 210, 255, 0.25), inset 0 0 25px rgba(0,0,0,0.8);
+            position: relative;
+            z-index: 20;
+            backdrop-filter: blur(4px);
+        }
+
+        .vault-header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-glow);
+            padding-bottom: 15px;
+        }
+
+        .vault-header h1 {
+            font-size: 18px;
+            letter-spacing: 3px;
+            color: #FFF;
+            text-shadow: 0 0 10px var(--accent-blue);
+        }
+
+        .vault-header p {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            font-size: 10px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-field {
+            background: #010408;
+            border: 1px solid var(--border-glow);
+            border-radius: 2px;
+            padding: 10px;
+            color: var(--accent-green);
+            font-family: inherit;
+            font-size: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 8px rgba(0, 210, 255, 0.2);
+        }
+
+        /* Action Buttons */
+        .btn-auth {
+            width: 100%;
+            background: linear-gradient(rgba(0,210,255,0.1), rgba(0,210,255,0));
+            border: 1px solid var(--accent-blue);
+            color: #FFF;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.2s ease;
+            margin-top: 5px;
+        }
+
+        .btn-auth:hover {
+            background: var(--accent-blue);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-blue);
+        }
+
+        .feedback-node {
+            margin-top: 15px;
+            font-size: 10px;
+            text-align: center;
+            min-height: 15px;
+            font-family: monospace;
+        }
+        .status-error { color: var(--accent-red); text-shadow: 0 0 4px var(--accent-red); }
+        .status-success { color: var(--accent-green); text-shadow: 0 0 4px var(--accent-green); }
+    </style>
+</head>
+<body>
+
+    <!-- Video Glass Effects and Background Streaming Engines -->
+    <div class="screen-overlay"></div>
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- UI Interaction Frame Box -->
+    <div class="login-vault">
+        <div class="vault-header">
+            <h1>CYBER-BIO HEALTH</h1>
+            <p>BIOWEARABLE TELEMETRY LINK v3.0</p>
+        </div>
+
+        <form id="gatekeeperForm" onsubmit="executeAuthentication(event)">
+            <div class="form-group">
+                <label for="operatorId">Operator Username</label>
+                <input type="text" id="operatorId" class="input-field" required placeholder="AWAKEN_FURY" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label for="encryptionKey">Access Passkey</label>
+                <input type="password" id="encryptionKey" class="input-field" required placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn-auth">Initialize Link</button>
+        </form>
+
+        <div class="feedback-node" id="feedbackNode">[ STATUS: AWAITING CREDENTIALS ]</div>
+    </div>
+
+    <script>
+        /* ===================================================================
+           1. HARDWARE SIMULATION: ACTIVE MATRIX DROP RADIAN SCRIPTER
+           =================================================================== */
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Binary telemetry streaming bits array parameters
+        const matrixChars = "01";
+        const fontSize = 14;
+        const columns = Math.floor(canvas.width / fontSize);
+        
+        // Track the vertical placement metrics for the drops
+        const dropTrackingArray = Array(columns).fill(1);
+
+        function renderMatrixFlowAnimation() {
+            // Apply slight alpha dilution to clear background trail states cleanly
+            ctx.fillStyle = 'rgba(1, 6, 11, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Configure color array vectors targeting cyber bio azure blue tint
+            ctx.fillStyle = 'rgba(0, 210, 255, 0.35)';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < dropTrackingArray.length; i++) {
+                const randomBitChar = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                const xCoordPosition = i * fontSize;
+                const yCoordPosition = dropTrackingArray[i] * fontSize;
+
+                // Randomly highlight single bits to simulate packet velocity variations
+                if (Math.random() > 0.98) {
+                    ctx.fillStyle = '#FFFFFF';
+                } else {
+                    ctx.fillStyle = 'rgba(0, 210, 255, 0.4)';
+                }
+
+                ctx.fillText(randomBitChar, xCoordPosition, yCoordPosition);
+
+                // Check drop placement bounds and calculate variance velocity reset
+                if (yCoordPosition > canvas.height && Math.random() > 0.975) {
+                    dropTrackingArray[i] = 0;
+                }
+                dropTrackingArray[i]++;
+            }
+        }
+        setInterval(renderMatrixFlowAnimation, 33);
+
+        /* ===================================================================
+           2. SECURITY CORE: GATEKEEPER ROUTING CHECKS
+           =================================================================== */
+        function executeAuthentication(event) {
+            event.preventDefault();
+            
+            const operator = document.getElementById('operatorId').value.trim();
+            const passkey = document.getElementById('encryptionKey').value;
+            const feedback = document.getElementById('feedbackNode');
+
+            feedback.className = "feedback-node";
+            feedback.innerHTML = "[ PROCESSING BIOMETRIC TOKENS... ]";
+
+            setTimeout(() => {
+                if (operator === "AWAKEN_FURY" && passkey === "override2026") {
+                    feedback.className = "feedback-node status-success";
+                    feedback.innerHTML = "[ ACCESS GRANTED // ROUTING TO TERMINAL MATRIX ]";
+                    
+                    setTimeout(() => {
+                        window.location.href = "cyberbio-unified-os.html";
+                    }, 1000);
+                } else {
+                    feedback.className = "feedback-node status-error";
+                    feedback.innerHTML = "[ SECURITY BREACH // ACCESS DENIED // TOKEN INVALID ]";
+                }
+            }, 800);
+        }
+    </script>
+
+</body>
+</html>
