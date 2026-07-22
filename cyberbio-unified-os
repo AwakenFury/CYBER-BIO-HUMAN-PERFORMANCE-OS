@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Bio OS // Main Terminal GUI</title>
+    <style>
+        :root {
+            --bg-main: #01060B;
+            --bg-card: rgba(4, 14, 26, 0.65);
+            --border-glow: #004466;
+            --accent-blue: #00C3FF;
+            --accent-green: #00FF88;
+            --accent-red: #FF3366;
+            --accent-amber: #FFAA00;
+            --text-primary: #D5E3F5;
+            --text-secondary: #5F7D95;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            padding: 10px;
+            font-size: 12px;
+            overflow-x: hidden;
+        }
+
+        /* Top OS Navigation Infrastructure */
+        .os-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(4, 14, 26, 0.9);
+            border: 1px solid var(--border-glow);
+            padding: 8px 15px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+        }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-item { color: var(--text-secondary); text-decoration: none; font-weight: bold; font-size: 11px; letter-spacing: 1px;}
+        .nav-item.active { color: var(--accent-blue); text-shadow: 0 0 8px var(--accent-blue); }
+
+        /* Master Dashboard Matrix Layout */
+        .dashboard-matrix {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 12px;
+            height: calc(100vh - 75px);
+        }
+
+        /* Reusable UI Command Modules */
+        .hud-module {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 195, 255, 0.15);
+            border-radius: 4px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            box-shadow: inset 0 0 15px rgba(0, 195, 255, 0.03);
+        }
+        .hud-module::before {
+            content: ''; position: absolute; top: -1px; left: 10px; width: 20px; height: 2px; background: var(--accent-blue);
+        }
+        .module-header {
+            font-size: 11px; font-weight: bold; color: #FFF; letter-spacing: 1px; text-transform: uppercase;
+            border-bottom: 1px solid rgba(0, 68, 102, 0.4); padding-bottom: 4px;
+        }
+
+        /* Left & Right Structural Columns */
+        .side-col { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+
+        /* Center Display Core Framework */
+        .center-display {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: radial-gradient(circle at center, rgba(0, 195, 255, 0.05) 0%, transparent 70%);
+            border: 1px solid rgba(0, 68, 102, 0.2);
+            position: relative;
+        }
+        .branding-title {
+            text-align: center; margin-top: 40px;
+        }
+        .branding-title h1 {
+            font-size: 42px; font-weight: 900; letter-spacing: 8px; color: #FFF;
+            text-shadow: 0 0 20px rgba(0, 195, 255, 0.4);
+        }
+        .branding-title p { color: var(--accent-blue); letter-spacing: 3px; font-size: 11px; margin-top: 5px; }
+
+        /* Data Inline Telemetry Streams */
+        .tel-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+        .tel-val { font-family: monospace; font-weight: bold; font-size: 13px; }
+        .val-good { color: var(--accent-green); }
+        .val-warn { color: var(--accent-amber); }
+
+        /* Training Checklist Grid */
+        .workout-list { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .workout-list td { padding: 5px 0; border-bottom: 1px solid rgba(0, 68, 102, 0.2); }
+        .workout-list tr:last-child td { border: none; }
+        .ex-name { font-weight: bold; color: #FFF; }
+        .ex-sets { text-align: right; font-family: monospace; color: var(--accent-blue); }
+
+        /* Interactive Footer System Ledger */
+        .os-footer {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #01060B; border-top: 1px solid var(--border-glow);
+            padding: 5px 15px; display: flex; justify-content: space-between;
+            font-size: 10px; color: var(--text-secondary); font-family: monospace; z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top OS Module Navigation Routing Bar -->
+    <div class="os-nav">
+        <div style="font-weight: bold; color: #FFF; letter-spacing: 1px;">CYBER-BIO // OS v2.7.4</div>
+        <div class="nav-links">
+            <a href="#" class="nav-item active">DASHBOARD</a>
+            <a href="#" class="nav-item">TRAINING</a>
+            <a href="#" class="nav-item">NUTRITION</a>
+            <a href="#" class="nav-item">RECOVERY</a>
+            <a href="#" class="nav-item">HEALTH</a>
+            <a href="#" class="nav-item">AI COACH</a>
+        </div>
+        <div>07:42 AM</div>
+    </div>
+
+    <!-- Main Workspace Area -->
+    <div class="dashboard-matrix">
+        
+        <!-- LEFT CHANNEL: REAL-TIME BIOMETRIC READOUTS -->
+        <div class="side-col">
+            <!-- Biosignals Telemetry Grid -->
+            <div class="hud-module">
+                <div class="module-header">Biosignals</div>
+                <div class="tel-row"><span>ECG Pulse Rate:</span><span class="tel-val val-good">72 BPM</span></div>
+                <div class="tel-row"><span>Heart Rate Var (HRV):</span><span class="tel-val val-good">84 ms</span></div>
+                <div class="tel-row"><span>Respiration Track:</span><span class="tel-val">14 RPM</span></div>
+                <div class="tel-row"><span>Oxygen Saturation:</span><span class="tel-val val-good">98 %</span></div>
+                <div class="tel-row"><span>Core Temp Vector:</span><span class="tel-val">36.6 °C</span></div>
+            </div>
+
+            <!-- Neuromuscular Strain Metrics -->
+            <div class="hud-module">
+                <div class="module-header">Neuromuscular Fatigue</div>
+                <div class="tel-row"><span>Chest Strain:</span><span class="tel-val">82%</span></div>
+                <div class="tel-row"><span>Back Loading:</span><span class="tel-val">76%</span></div>
+                <div class="tel-row"><span>Shoulder Displacement:</span><span class="tel-val">74%</span></div>
+                <div class="tel-row"><span>Core Rigidity Index:</span><span class="tel-val val-good">83%</span></div>
+                <div class="tel-row" style="margin-top: 5px; border-top: 1px dashed var(--border-glow); padding-top: 5px;">
+                    <span>Systemic Exhaustion:</span><span class="tel-val val-good">18%</span>
+                </div>
+            </div>
+
+            <!-- Kinetic Impact & Injury Tracker -->
+            <div class="hud-module">
+                <div class="module-header">Injury & Structural Impact</div>
+                <div class="tel-row"><span>Kinetic Strain Risk:</span><span class="tel-val val-warn">MODERATE</span></div>
+                <div class="tel-row"><span>Left Knee Load:</span><span class="tel-val val-warn">45%</span></div>
+                <div class="tel-row"><span>Lower Back Comp:</span><span class="tel-val">38%</span></div>
+                <div class="tel-row"><span>Peak G-Force Impact:</span><span class="tel-val var-good">7.2G</span></div>
+            </div>
+        </div>
+
+        <!-- CENTER PANEL: SYSTEM BRANDING & TACTICAL BACKDROP -->
+        <div class="center-display">
+            <div class="branding-title">
+                <h1>CYBER-BIO</h1>
+                <p>HUMAN PERFORMANCE OS</p>
+                <div style="font-size: 9px; color: var(--text-secondary); margin-top: 15px; letter-spacing: 5px;">
+                    PROJECT AETHER // SYSTEM OPERATIONAL
+                </div>
+            </div>
+            
+            <div style="color: var(--text-secondary); font-size: 10px; font-family: monospace; letter-spacing: 2px; margin-bottom: 20px;">
+                REAL TIME DATA. REAL HUMAN. REAL EVOLUTION.
+            </div>
+        </div>
+
+        <!-- RIGHT CHANNEL: INGESTION LOGS & RUNTIME ROUTINES -->
+        <div class="side-col">
+            <!-- Nutrition Tracking Ledger -->
+            <div class="hud-module">
+                <div class="module-header">Nutrition Overview</div>
+                <div class="tel-row"><span>Daily Target Fuel:</span><span class="tel-val var-good">2,450 / 2,900 kcal</span></div>
+                <div class="tel-row"><span>Protein Threshold:</span><span class="tel-val">165g / 180g</span></div>
+                <div class="tel-row"><span>Carbohydrate Cap:</span><span class="tel-val">220g / 300g</span></div>
+            </div>
+
+            <!-- Workout Sequence Matrix -->
+            <div class="hud-module">
+                <div class="module-header">Workout Plan // Push Day</div>
+                <table class="workout-list">
+                    <tr><td class="ex-name">Bench Press</td><td class="ex-sets">4 x 8</td></tr>
+                    <tr><td class="ex-name">Incline DB Press</td><td class="ex-sets">4 x 10</td></tr>
+                    <tr><td class="ex-name">Shoulder Press</td><td class="ex-sets">4 x 8</td></tr>
+                    <tr><td class="ex-name">Tricep Dips</td><td class="ex-sets">3 x 12</td></tr>
+                </table>
+                <div class="tel-row" style="font-size: 10px; margin-top: 5px; color: var(--text-secondary)">
+                    <span>Est Duration: 75 Min</span>
+                    <span>Intensity: <span class="val-fail">HIGH</span></span>
+                </div>
+            </div>
+
+                <!-- Continued Section from Part 1 -->
+                <div class="tel-row" style="font-size: 10px; margin-top: 5px; color: var(--text-secondary)">
+                    <span>Est Duration: 75 Min</span>
+                    <span>Intensity: <span class="val-fail">HIGH</span></span>
+                </div>
+            </div>
+
+            <!-- System Progress Variations -->
+            <div class="hud-module">
+                <div class="module-header">Progress Metric Balance</div>
+                <div class="tel-row"><span>Strength Capacity:</span><span class="tel-val val-good">+12%</span></div>
+                <div class="tel-row"><span>Muscle Mass Velocity:</span><span class="tel-val val-good">+4.3kg</span></div>
+                <div class="tel-row"><span>Adipose Tissue Delta:</span><span class="tel-val val-good">-2.1%</span></div>
+                <div class="tel-row"><span>Endurance Threshold:</span><span class="tel-val val-good">+15%</span></div>
+            </div>
+
+            <!-- AI Coach Guidance Node -->
+            <div class="hud-module" style="background: rgba(0, 195, 255, 0.02); border-color: rgba(0, 195, 255, 0.3);">
+                <div class="module-header" style="color: var(--accent-blue);">AI Coach Aether</div>
+                <p style="font-size: 11px; line-height: 1.4; color: var(--text-primary); font-style: italic; padding: 4px 0;">
+                    "Good morning, Champion. Your recovery is optimal. Let's execute the tactical regimen and crush today's metrics."
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Persistent Global System Ledger Footer -->
+    <div class="os-footer">
+        <div>CYBER-BIO OS v2.7.4 // STATUS: OPTIMAL</div>
+        <div>[ SYNC: OK ] [ CLOUD: DISCONNECTED ] [ DEVICE LINK: SECURE ] [ ENCRYPTED ] [ AI PROTECTED ]</div>
+        <div>USER: AWAKEN_FURY</div>
+    </div>
+
+</body>
+</html>
+
+
